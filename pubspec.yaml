@@ -1,0 +1,158 @@
+name: forge
+description: "Forge — the iron trade, organized."
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.10.8
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+
+  # State management — Riverpod (compile-safe, ref-counted, codegen).
+  flutter_riverpod: ^2.6.1
+  riverpod_annotation: ^2.6.1
+
+  # Routing — declarative, deep-link friendly, ShellRoute for bottom nav.
+  go_router: ^14.6.2
+
+  # Locale-aware formatting (currency, dates).
+  intl: ^0.20.1
+
+  # Inter font. We start by fetching from Google Fonts (cached after first
+  # run); production migration plan = bundle TTFs as assets and call
+  # GoogleFonts.config.allowRuntimeFetching = false.
+  google_fonts: ^6.2.1
+
+  # Map tiles via OpenStreetMap. Kept as the FALLBACK implementation
+  # in case Google Maps is broken, the API key is revoked, or there's
+  # a quota issue. The runtime decides which to use via the
+  # `useGoogleMaps` flag in `lib/features/jobs/widgets/map_view.dart`.
+  flutter_map: ^7.0.2
+  latlong2: ^0.9.1
+
+  # Primary map provider. API key lives in the platform manifests
+  # (Android: AndroidManifest.xml meta-data; iOS: AppDelegate.swift
+  # via GMSServices.provideAPIKey) — never in Dart code or pubspec.
+  # Flip `useGoogleMaps` to `false` in `map_view.dart` to fall back
+  # to the OSM implementation without removing this dep.
+  google_maps_flutter: ^2.9.0
+
+  # Production HTTP client — used by `lib/core/api/api_client.dart`.
+  http: ^1.2.2
+
+  # MIME type parser, needed to set `contentType` on multipart uploads
+  # (POST /uploads). Already pulled in transitively by `http` — declared
+  # here to keep the direct-import explicit.
+  http_parser: ^4.0.2
+
+  # Real RFC 4122 v4 UUIDs for `Idempotency-Key` headers (per
+  # `endpoint_resources/00_README.md`). Same key must be reused on
+  # retry until a terminal response, so we generate once per logical
+  # action and persist via `IdempotencyStore` until cleared.
+  uuid: ^4.5.1
+
+  # Camera capture for the signup liveness selfie (see
+  # `endpoint_resources/23_liveness.md`). Uses the system camera UI
+  # via the front-facing lens so the user takes the selfie inside our
+  # flow, the bytes get uploaded for AI verification, and the
+  # returned `upload_id` becomes their avatar via profile-setup.
+  image_picker: ^1.1.2
+
+  # Token + session persistence (Keychain on iOS, EncryptedSharedPreferences
+  # on Android). Survives app cold-start so a logged-in user is taken
+  # straight to the home shell on next launch.
+  flutter_secure_storage: ^9.2.2
+
+  # Disk-cached network images. Stock `Image.network` only caches in
+  # memory, so a worker's avatar reloads from the network on every
+  # cold start — visible flicker on slow connections, and useless
+  # offline. `cached_network_image` writes the bytes to the app's
+  # cache directory keyed by URL, so subsequent loads are instant.
+  # Used by `lib/shared/widgets/network_image_with_fallback.dart`.
+  cached_network_image: ^3.4.1
+
+  # Device location with permission handling. Requests GPS access and
+  # returns real-time coordinates for geofencing and job feed queries.
+  geolocator: ^14.0.2
+
+  # Reverse geocoding — turns lat/lng into Placemarks (street,
+  # neighbourhood, city). Uses the platform's native geocoders
+  # (Android Geocoder, iOS CLGeocoder), so no API key, no separate
+  # rate limit. Used by `currentLocationLabelProvider` to render
+  # human-readable headers like "Yaba, Lagos" instead of the
+  # nearest-city heuristic fallback.
+  geocoding: ^3.0.0
+
+  # Push notifications (FCM transport — see
+  # `endpoint_resources/24_push_notifications.md`).
+  #
+  # firebase_core         — bootstraps the Firebase SDKs. Required by
+  #                         every other firebase_* package. Configured
+  #                         per-platform via `flutterfire configure`.
+  # firebase_messaging    — FCM client: token, permission, onMessage
+  #                         (foreground), onBackgroundMessage (background
+  #                         + terminated isolate handler), tap routing.
+  # flutter_local_notifications
+  #                       — Required to *display* foreground pushes on
+  #                         Android (FCM does not auto-show in foreground)
+  #                         and to register Android channels with the
+  #                         `opay_credit` custom sound for application-
+  #                         accepted + payment-credited events.
+  firebase_core: ^3.6.0
+  firebase_messaging: ^15.1.3
+  flutter_local_notifications: ^17.2.3
+
+  # Open external URLs / deeplinks (e.g. Google Maps turn-by-turn).
+  # No API key required — we just hand off to the user's Maps app
+  # using the universal `https://www.google.com/maps/dir/?api=1&...`
+  # scheme. Google Maps uses the device's current location as origin.
+  url_launcher: ^6.3.1
+
+  # Native OS share sheet (WhatsApp / Messages / Email / etc). Used
+  # by the job-detail share button — workers send job listings to
+  # mates, supervisors, drivers in their network. Plain-text payload
+  # plus a Google Maps location link.
+  share_plus: ^10.1.2
+
+  # PDF generation for the GDPR-style "Download my data" export. We
+  # build the doc in-memory and hand the bytes to `printing` for the
+  # OS-level preview / save / share sheet. No network involved — the
+  # export is a snapshot of providers already fetched, so a worker
+  # can save their record even on a flaky connection.
+  pdf: ^3.11.0
+  printing: ^5.13.0
+
+  # File-system access for writing the generated PDF to a temp
+  # directory before handing it to share_plus. printing covers the
+  # preview path; share_plus + path_provider covers the "Save to
+  # Files / Drive / WhatsApp" share path.
+  path_provider: ^2.1.5
+
+  # Voice search (POST /ai/search/parse voice mode) is temporarily
+  # text-only — the `record` package's transitive `record_linux` /
+  # `record_platform_interface` versions don't agree on
+  # `startStream` / `hasPermission` signatures, which fails the
+  # build even on Android-only targets. When upstream fixes that,
+  # add `record`, `permission_handler`, `path_provider` back.
+  # Text-mode search continues to work; the mic icon shows a
+  # "coming soon" snackbar.
+  # record: 5.1.2
+  # permission_handler: ^11.3.1
+  # path_provider: ^2.1.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+  # Codegen — Riverpod generator.
+  build_runner: ^2.4.13
+  riverpod_generator: ^2.6.4
+  custom_lint: ^0.7.0
+  riverpod_lint: ^2.6.3
+
+flutter:
+  uses-material-design: true

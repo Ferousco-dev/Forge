@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "424529081327",
+    "project_id": "forge-squad-hackathon",
+    "storage_bucket": "forge-squad-hackathon.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:424529081327:android:5e980cdebf2207f3d83c1a",
+        "android_client_info": {
+          "package_name": "com.squadco.forge"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCNErN1CC5NMgbxwoLR_aEdL0o-ypPKSYU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

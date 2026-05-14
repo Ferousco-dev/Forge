@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Brand tint applied by FCM to the status-bar notification small
+         icon (see com.google.firebase.messaging.default_notification_color
+         in AndroidManifest.xml). Mirrors AppColors.light.primary —
+         deep teal. -->
+    <color name="forge_primary">#FF0E695F</color>
+    <!-- Mirrors AppColors.light.surface (palette.surface in Dart) so the
+         native launch screen visually matches the Dart splash and there's
+         no black flash between OS launch and Flutter's first frame. -->
+    <color name="forge_splash_surface">#FFFCFCFA</color>
+</resources>
