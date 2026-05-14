@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>CFBundleDisplayName</key>
+	<string>Forge</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>forge</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$(FLUTTER_BUILD_NAME)</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
+	<key>UIMainStoryboardFile</key>
+	<string>Main</string>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>UISupportedInterfaceOrientations~ipad</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
+	<!-- Location: jobs feed (lat/lng query), clock-in geofence,
+	     "near me" surfaces. Worker grants in /auth/permissions/location.
+	     Only the WhenInUse variant — the app never reads location in
+	     background, so declaring the "Always" string is a noise dialog
+	     iOS shows that workers (rightly) find suspicious. -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Forge uses your location to show jobs near you and to verify when you've arrived at a work site.</string>
+
+	<!-- Camera: signup liveness selfie (POST /uploads/liveness) and
+	     clock-out proof photo (POST /uploads then /sessions/:id/clock-out). -->
+	<key>NSCameraUsageDescription</key>
+	<string>Forge uses your camera so you can take a verification selfie at signup and a proof-of-work photo when you clock out.</string>
+
+	<!-- Photo library: required by image_picker on iOS even when we
+	     only use the camera path — iOS surfaces a single permission
+	     dialog the first time the picker opens. Used for the
+	     edit-profile avatar update flow when the worker chooses
+	     "From library" instead of camera. -->
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Forge needs access to your photos so you can pick a profile picture from your library.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Forge saves the proof photo from a work session to your camera roll for your records.</string>
+
+	<!-- App Transport Security — production traffic is HTTPS only.
+	     Default ATS settings (no NSAllowsArbitraryLoads) are correct;
+	     no override needed. -->
+
+	<key>io.flutter.embedded_views_preview</key>
+	<true/>
+
+	<!-- FCM: remote-notification background mode lets iOS wake the
+	     app for `content-available: 1` data pushes and lets the FCM
+	     SDK swap the APNs token for an FCM token before the first
+	     send. Required for the `payment` and `application_update`
+	     flows in endpoint_resources/24_push_notifications.md. -->
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+		<string>fetch</string>
+	</array>
+
+	<!-- FCM: lets the SDK auto-init on launch. Setting this to NO
+	     would defer init until we explicitly opt in, which we don't
+	     need — push is part of the core onboarding flow. -->
+	<key>FirebaseMessagingAutoInitEnabled</key>
+	<true/>
+</dict>
+</plist>
