@@ -2,6 +2,14 @@
 
 > Find work nearby, clock in with GPS, get paid the moment you clock out, build credit that banks recognise.
 
+## Releases
+
+- Android APK:
+  https://github.com/Ferousco-dev/Forge/releases/download/v1.0.0/app-arm64-v8a-release.apk
+
+- All releases:
+  https://github.com/Ferousco-dev/Forge/releases
+
 Forge is a Flutter mobile app for Nigeria's blue-collar gig workforce — loaders, drivers, unloaders, welders, general labour. Workers find jobs near them, the app verifies they actually showed up, employers can't ghost them, payment lands instantly via Squad, and every completed shift becomes part of a portable credit record that unlocks loans.
 
 ---
