@@ -1,0 +1,119 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- HTTP — declared explicitly. Flutter's debug build adds it
+         automatically, but release builds need it spelled out. -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
+    <!-- Location for the home-screen map's "my location" indicator,
+         the jobs-feed lat/lng query, and clock-in geofence. -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+
+    <!-- Camera for the signup liveness selfie and the clock-out proof
+         photo. image_picker on Android delegates to the system
+         camera app via ACTION_IMAGE_CAPTURE which doesn't strictly
+         require this permission, but declaring it lets us also use
+         in-app camera previews (e.g. clock-out review) and keeps
+         older OEM camera apps happy. -->
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-feature android:name="android.hardware.camera" android:required="false"/>
+    <uses-feature android:name="android.hardware.camera.front" android:required="false"/>
+
+    <!-- Image library access for image_picker.
+         API 33+ uses scoped media permissions. -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+    <!-- Legacy (API 32 and below). The maxSdkVersion stops Play
+         Store from flagging the permission as unused on modern
+         devices. -->
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32"/>
+
+    <!-- Push notifications (FCM). Required at runtime on Android 13+
+         per the spec's notification flows: application accepted/
+         rejected, payment confirmations, loan decisions
+         (endpoint_resources/19_notifications.md). -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+
+    <!-- Vibrate ride-along on incoming notification haptics. -->
+    <uses-permission android:name="android.permission.VIBRATE"/>
+
+    <application
+        android:label="Forge"
+        android:name="${applicationName}"
+        android:icon="@mipmap/ic_launcher"
+        android:usesCleartextTraffic="false"
+        android:requestLegacyExternalStorage="false">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:taskAffinity=""
+            android:theme="@style/LaunchTheme"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+            android:hardwareAccelerated="true"
+            android:windowSoftInputMode="adjustResize">
+            <!-- Specifies an Android theme to apply to this Activity as soon as
+                 the Android process has started. This theme is visible to the user
+                 while the Flutter UI initializes. After that, this theme continues
+                 to determine the Window background behind the Flutter UI. -->
+            <meta-data
+              android:name="io.flutter.embedding.android.NormalTheme"
+              android:resource="@style/NormalTheme"
+              />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <!-- Don't delete the meta-data below.
+             This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
+        <meta-data
+            android:name="flutterEmbedding"
+            android:value="2" />
+
+        <!-- Google Maps API key. Restrict in the Google Cloud Console
+             to this Android package + SHA-1 fingerprint before
+             shipping. The OSM fallback in
+             lib/features/jobs/widgets/map_view.dart kicks in if this
+             key gets revoked. -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCu7b1kbut4req__M06W49Depsxfx5x6XQ" />
+
+        <!-- FCM: monochrome status-bar notification icon. Must be a
+             white-on-transparent drawable in res/drawable-*. Drop the
+             asset before first run; until then, Android falls back to
+             ic_launcher and renders it as a white square. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_stat_forge" />
+
+        <!-- FCM: brand tint applied to the small icon + accent. Matches
+             AppColors.light.primary (deep teal). Defined in
+             res/values/colors.xml. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/forge_primary" />
+
+        <!-- FCM: fallback channel for messages whose payload omits
+             `android.notification.channel_id`. Should never trigger in
+             practice — every server-sent push specifies a channel
+             (see endpoint_resources/24_push_notifications.md) — but
+             Android requires the meta to exist for the FCM SDK. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="forge_default" />
+    </application>
+    <!-- Required to query activities that can process text, see:
+         https://developer.android.com/training/package-visibility and
+         https://developer.android.com/reference/android/content/Intent#ACTION_PROCESS_TEXT.
+
+         In particular, this is used by the Flutter engine in io.flutter.plugin.text.ProcessTextPlugin. -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.PROCESS_TEXT"/>
+            <data android:mimeType="text/plain"/>
+        </intent>
+    </queries>
+</manifest>
